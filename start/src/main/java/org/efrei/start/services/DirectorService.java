@@ -17,7 +17,7 @@ public class DirectorService {
         return directorRepository.findAll();
     }
 
-    public Director getDirectorById(Long id) {
+    public Director getDirectorById(String id) {
         return directorRepository.findById(id).orElse(null);
     }
 
@@ -25,7 +25,7 @@ public class DirectorService {
         return directorRepository.save(director);
     }
 
-    public void deleteDirector(Long id) {
+    public void deleteDirector(String id) {
         directorRepository.deleteById(id);
     }
 }
