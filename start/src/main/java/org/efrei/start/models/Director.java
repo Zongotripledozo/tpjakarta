@@ -3,8 +3,9 @@ package org.efrei.start.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
+
 @Entity
-public class Actor {
+public class Director {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,8 +13,8 @@ public class Actor {
 
     private String name;
 
-    @ManyToMany(mappedBy = "actors")
-    @JsonIgnoreProperties("actors")  // Ignore the 'actors' field in Movie to prevent infinite recursion
+    @OneToMany(mappedBy = "director")
+    @JsonIgnoreProperties("director")  // Ignore the 'director' field in Movie to prevent infinite recursion
     private List<Movie> movies;
 
     // Getters and Setters

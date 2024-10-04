@@ -1,70 +1,47 @@
 package org.efrei.start.controllers;
 
-import java.util.List;
-
-import org.efrei.start.dto.CreateActor;
 import org.efrei.start.models.Actor;
 import org.efrei.start.services.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/actors")
 public class ActorController {
 
-    private final ActorService service;
-
     @Autowired
-    public ActorController(ActorService service) {
-        this.service = service;
-    }
+    private ActorService performerService;
 
     @GetMapping
-    public ResponseEntity<List<Actor>> findAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    public List<Actor> getAllPerformers() {
+        return performerService.getAllActors();
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Actor> findById(@PathVariable String id) {
-        Actor actor = service.findById(id);
-        if (actor == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(actor, HttpStatus.OK);
+    @GetMapping("/{identifier}")
+    public Actor getPerformerById(@PathVariable Long identifier) {
+        return performerService.getActorById(identifier);
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateActor actor) {
-        service.create(actor);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public Actor createPerformer(@RequestBody Actor performer) {
+        return performerService.saveActor(performer);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        if (service.findById(id) == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping("/{identifier}")
+    public Actor updatePerformer(@PathVariable Long identifier, @RequestBody Actor performerDetails) {
+        Actor performer = performerService.getActorById(identifier);
+        if (performer != null) {
+            performer.setName(performerDetails.getName());
+            performer.setMovies(performerDetails.getMovies());
+            return performerService.saveActor(performer);
         }
-        service.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return null;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody Actor actor) {
-        if (service.findById(id) == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        service.update(id, actor);
-        return new ResponseEntity<>(actor, HttpStatus.OK);
+    @DeleteMapping("/{identifier}")
+    public void deletePerformer(@PathVariable Long identifier) {
+        performerService.deleteActor(identifier);
     }
-
 }
